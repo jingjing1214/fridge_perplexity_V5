@@ -8,9 +8,12 @@ def search_recipes(ingredients):
     res = requests.get(url, headers=headers)
     soup = BeautifulSoup(res.text, "html.parser")
     results = []
-    for g in soup.select(".tF2Cxc")[:5]:
-        title = g.select_one("h3").text if g.select_one("h3") else "無標題"
-        link = g.select_one("a")["href"] if g.select_one("a") else "#"
-        snippet = g.select_one(".VwiC3b").text if g.select_one(".VwiC3b") else ""
-        results.append((title, link, snippet))
+    for g in soup.find_all("div"):
+        if g.select_one("h3") and g.select_one("a"):
+            title = g.select_one("h3").text
+            link = g.select_one("a")["href"]
+            snippet = g.get_text()
+            results.append((title, link, snippet[:100]))
+        if len(results) >= 5:
+            break
     return results

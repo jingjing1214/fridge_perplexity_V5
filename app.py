@@ -14,10 +14,16 @@ if api_key:
     st.subheader("🔍 推薦食譜")
     if st.button("推薦食譜"):
         with st.spinner("搜尋中..."):
-            results = search_recipes(default_ingredients)
-            for title, url, snippet in results:
-                st.markdown(f"### [{title}]({url})")
-                st.markdown(f"> {snippet}")
+            try:
+                results = search_recipes(default_ingredients)
+                if results:
+                    for title, url, snippet in results:
+                        st.markdown(f"### [{title}]({url})")
+                        st.markdown(f"> {snippet}")
+                else:
+                    st.warning("❌ 找不到食譜，請確認關鍵字或稍後再試。")
+            except Exception as e:
+                st.error(f"⚠️ 食譜搜尋失敗：{e}")
 
     st.subheader("🧠 與料理助理聊聊")
     user_input = st.text_input("輸入你的問題")
